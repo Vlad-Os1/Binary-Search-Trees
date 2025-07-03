@@ -27,6 +27,7 @@ class Tree {
     let newNode = new Node(value);
     if (this.root === null) {
       this.root = newNode;
+      return;
     }
     let current = this.root;
     while (true) {
@@ -48,19 +49,51 @@ class Tree {
   }
   deleteItem(value) {
     let nodeToDelete = this.find(value);
-    let current = this.root;
-    let parent = this.root;
-    while (parent !== null) {
-      if (parent.right === nodeToDelete || parent.left === nodeToDelete) {
-        break;
+    let parent = this.findParent(nodeToDelete);
+
+    // delete when nodeToDelete has both children
+    if (nodeToDelete.left !== null && nodeToDelete.right !== null) {
+      let successor = nodeToDelete.right;
+      while (successor.left !== null) {
+        successor = successor.left;
       }
-      if (nodeToDelete.data > parent.data) {
-        parent = parent.right;
+      let successorParent = this.findParent(successor);
+      nodeToDelete.data = successor.data;
+      if (successor.data === successorParent.right.data) {
+        successorParent.right = successor.right;
       } else {
-        parent = parent.left;
+        successorParent.left = successor.right;
       }
+      return;
     }
-    console.log(parent);
+    // delete when nodeToDelete has only one children
+    if (nodeToDelete.left !== null || nodeToDelete.right !== null) {
+      let child =
+        nodeToDelete.left !== null ? nodeToDelete.left : nodeToDelete.right;
+      if (nodeToDelete === this.root) {
+        this.root = child;
+        return;
+      }
+      if (parent.left === nodeToDelete) {
+        parent.left = child;
+      } else {
+        parent.right = child;
+      }
+      return;
+    }
+    // delete when nodeToDelete does'nt have children
+    if (nodeToDelete.left === null && nodeToDelete.right === null) {
+      if (nodeToDelete === this.root) {
+        this.root = null;
+        return;
+      }
+      if (nodeToDelete === parent.right) {
+        parent.right = null;
+      } else {
+        parent.left = null;
+      }
+      return;
+    }
   }
   find(value) {
     if (this.root === null) {
@@ -78,6 +111,23 @@ class Tree {
       }
     }
     throw new Error('This value is not in the tree');
+  }
+  findParent(node) {
+    let parent = this.root;
+    if (node === this.root) {
+      return null;
+    }
+    while (parent !== null) {
+      if (parent.right === node || parent.left === node) {
+        break;
+      }
+      if (node.data > parent.data) {
+        parent = parent.right;
+      } else {
+        parent = parent.left;
+      }
+    }
+    return parent;
   }
 }
 
@@ -97,5 +147,8 @@ const prettyPrint = (node, prefix = '', isLeft = true) => {
 let array = [0, 1, 1, 2, 9, 3, 10, 4, 5, 6];
 let tree = new Tree(array);
 tree.insert(7);
+tree.insert(3.1);
+tree.insert(2.6);
+tree.insert(2.6);
+tree.deleteItem(4);
 prettyPrint(tree.root);
-console.log(tree.deleteItem(5));
