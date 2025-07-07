@@ -129,6 +129,25 @@ class Tree {
     }
     return parent;
   }
+  levelOrder(callback) {
+    if (!this.root) return [];
+    let queue = [this.root];
+    while (queue.length > 0) {
+      const current = queue.shift();
+      if (callback) {
+        callback(current);
+      } else {
+        throw new Error('Callback is required');
+      }
+      if (current.left) {
+        queue.push(current.left);
+      }
+      if (current.right) {
+        queue.push(current.right);
+      }
+    }
+    return;
+  }
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -152,3 +171,6 @@ tree.insert(2.6);
 tree.insert(2.6);
 tree.deleteItem(4);
 prettyPrint(tree.root);
+tree.levelOrder((node) => {
+  console.log(node.data);
+});
