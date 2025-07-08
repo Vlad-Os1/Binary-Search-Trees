@@ -148,6 +148,36 @@ class Tree {
     }
     return;
   }
+  preOrder(node, callback) {
+    if (node === null) return;
+    if (callback) {
+      callback(node);
+      this.preOrder(node.left, callback);
+      this.preOrder(node.right, callback);
+    } else {
+      throw new Error('Callback is required');
+    }
+  }
+  inOrder(node, callback) {
+    if (node === null) return;
+    if (callback) {
+      this.inOrder(node.left, callback);
+      callback(node);
+      this.inOrder(node.right, callback);
+    } else {
+      throw new Error('Callback is required');
+    }
+  }
+  postOrder(node, callback) {
+    if (node === null) return;
+    if (callback) {
+      this.postOrder(node.left, callback);
+      this.postOrder(node.right, callback);
+      callback(node);
+    } else {
+      throw new Error('Callback is required');
+    }
+  }
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -174,3 +204,7 @@ prettyPrint(tree.root);
 tree.levelOrder((node) => {
   console.log(node.data);
 });
+tree.postOrder(tree.root, logFunc);
+function logFunc(node) {
+  console.log(node.data);
+}
