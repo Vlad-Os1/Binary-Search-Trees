@@ -149,34 +149,28 @@ class Tree {
     return;
   }
   preOrder(node, callback) {
+    if (!callback) throw new Error('Callback is required');
     if (node === null) return;
-    if (callback) {
-      callback(node);
-      this.preOrder(node.left, callback);
-      this.preOrder(node.right, callback);
-    } else {
-      throw new Error('Callback is required');
-    }
+
+    callback(node);
+    this.preOrder(node.left, callback);
+    this.preOrder(node.right, callback);
   }
   inOrder(node, callback) {
+    if (!callback) throw new Error('Callback is required');
     if (node === null) return;
-    if (callback) {
-      this.inOrder(node.left, callback);
-      callback(node);
-      this.inOrder(node.right, callback);
-    } else {
-      throw new Error('Callback is required');
-    }
+
+    this.inOrder(node.left, callback);
+    callback(node);
+    this.inOrder(node.right, callback);
   }
   postOrder(node, callback) {
+    if (!callback) throw new Error('Callback is required');
     if (node === null) return;
-    if (callback) {
-      this.postOrder(node.left, callback);
-      this.postOrder(node.right, callback);
-      callback(node);
-    } else {
-      throw new Error('Callback is required');
-    }
+
+    this.postOrder(node.left, callback);
+    this.postOrder(node.right, callback);
+    callback(node);
   }
 }
 
