@@ -181,6 +181,21 @@ class Tree {
     computeHeight(node);
     console.log(computeHeight(node));
   }
+
+  depth(value) {
+    let node = this.find(value);
+    let depth = 0;
+    let current = this.root;
+    while (current !== node) {
+      if (node.data < current.data) {
+        current = current.left;
+      } else {
+        current = current.right;
+      }
+      depth++;
+    }
+    return depth;
+  }
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -212,3 +227,4 @@ prettyPrint(tree.root);
 //   console.log(node.data);
 // }
 tree.height(3, tree.root); // shall return 1
+console.log(tree.depth(3));
