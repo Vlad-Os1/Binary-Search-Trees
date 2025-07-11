@@ -172,6 +172,15 @@ class Tree {
     this.postOrder(node.right, callback);
     callback(node);
   }
+  height(value) {
+    let node = this.find(value);
+    let computeHeight = (node) => {
+      if (!node) return -1;
+      return 1 + Math.max(computeHeight(node.left), computeHeight(node.right));
+    };
+    computeHeight(node);
+    console.log(computeHeight(node));
+  }
 }
 
 const prettyPrint = (node, prefix = '', isLeft = true) => {
@@ -195,10 +204,11 @@ tree.insert(2.6);
 tree.insert(2.6);
 tree.deleteItem(4);
 prettyPrint(tree.root);
-tree.levelOrder((node) => {
-  console.log(node.data);
-});
-tree.postOrder(tree.root, logFunc);
-function logFunc(node) {
-  console.log(node.data);
-}
+// tree.levelOrder((node) => {
+//   console.log(node.data);
+// });
+// tree.postOrder(tree.root, logFunc);
+// function logFunc(node) {
+//   console.log(node.data);
+// }
+tree.height(3, tree.root); // shall return 1
