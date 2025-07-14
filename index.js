@@ -196,35 +196,42 @@ class Tree {
     }
     return depth;
   }
-}
+  isBalanced() {
+    let check = (node = this.root) => {
+      if (node === null) return 0;
+      let left = node.left;
+      let right = node.right;
 
-const prettyPrint = (node, prefix = '', isLeft = true) => {
-  if (node === null) {
-    return;
+      let leftHeight = check(left);
+      let rightHeight = check(right);
+
+      if (Math.abs(leftHeight - rightHeight) > 1) return -1;
+
+      return 1 + Math.max(leftHeight, rightHeight);
+    };
+    return check() !== -1;
   }
-  if (node.right !== null) {
-    prettyPrint(node.right, `${prefix}${isLeft ? '│   ' : '    '}`, false);
+
+  prettyPrint(node = this.root, prefix = '', isLeft = true) {
+    if (node === null) {
+      return;
+    }
+    if (node.right !== null) {
+      this.prettyPrint(
+        node.right,
+        `${prefix}${isLeft ? '│   ' : '    '}`,
+        false
+      );
+    }
+    console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
+    if (node.left !== null) {
+      this.prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
+    }
   }
-  console.log(`${prefix}${isLeft ? '└── ' : '┌── '}${node.data}`);
-  if (node.left !== null) {
-    prettyPrint(node.left, `${prefix}${isLeft ? '    ' : '│   '}`, true);
-  }
-};
+}
 
 let array = [0, 1, 1, 2, 9, 3, 10, 4, 5, 6];
 let tree = new Tree(array);
-tree.insert(7);
-tree.insert(3.1);
-tree.insert(2.6);
-tree.insert(2.6);
-tree.deleteItem(4);
-prettyPrint(tree.root);
-// tree.levelOrder((node) => {
-//   console.log(node.data);
-// });
-// tree.postOrder(tree.root, logFunc);
-// function logFunc(node) {
-//   console.log(node.data);
-// }
-tree.height(3, tree.root); // shall return 1
-console.log(tree.depth(3));
+tree.prettyPrint();
+
+console.log(tree.isBalanced());
