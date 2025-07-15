@@ -172,14 +172,14 @@ class Tree {
     this.postOrder(node.right, callback);
     callback(node);
   }
+
   height(value) {
     let node = this.find(value);
     let computeHeight = (node) => {
       if (!node) return -1;
       return 1 + Math.max(computeHeight(node.left), computeHeight(node.right));
     };
-    computeHeight(node);
-    console.log(computeHeight(node));
+    return computeHeight(node);
   }
 
   depth(value) {
@@ -197,19 +197,29 @@ class Tree {
     return depth;
   }
   isBalanced() {
+    const UNBALANCED = Symbol('unbalanced')
     let check = (node = this.root) => {
-      if (node === null) return 0;
-      let left = node.left;
-      let right = node.right;
+      if (node === null) return -1;
 
-      let leftHeight = check(left);
-      let rightHeight = check(right);
+      let leftHeight = check(node.left);
+      if(leftHeight === UNBALANCED) return UNBALANCED;
 
-      if (Math.abs(leftHeight - rightHeight) > 1) return -1;
+      let rightHeight = check(node.right);
+      if(rightHeight === UNBALANCED) return UNBALANCED;
+
+      if (Math.abs(leftHeight - rightHeight) > 1) return UNBALANCED;
 
       return 1 + Math.max(leftHeight, rightHeight);
     };
-    return check() !== -1;
+    return check() !== UNBALANCED;
+  }
+
+  rebalance() {
+    let newTree = [];
+    this.inOrder(this.root, (node) => {
+      newTree.push(node.data);
+    });
+    this.root = this.buildTree(newTree);
   }
 
   prettyPrint(node = this.root, prefix = '', isLeft = true) {
@@ -232,6 +242,12 @@ class Tree {
 
 let array = [0, 1, 1, 2, 9, 3, 10, 4, 5, 6];
 let tree = new Tree(array);
-tree.prettyPrint();
 
+tree.insert(10.1); //add node which will make the Tree unbalanced
+tree.prettyPrint();
+console.log(tree.height(9)); // still can get the height of the subtree which makes the tree unbalanced
 console.log(tree.isBalanced());
+// test logs for rebalance method
+tree.rebalance();
+tree.prettyPrint();
+tree.isBalanced();
